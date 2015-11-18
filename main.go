@@ -89,7 +89,6 @@ func actionMain(c *cli.Context) {
 			if !c.Bool("debug") {
 				fmt.Print(nif.Name)
 			} else {
-				//ips := stringIPs(append(v4Addrs, v6Addrs...))
 				fmt.Print(nif.Index, " ", nif.Name, " ", nif.HardwareAddr.String(), " ", nif.Flags.String())
 			}
 			fmt.Print(" ")
