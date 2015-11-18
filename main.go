@@ -66,11 +66,7 @@ func actionMain(c *cli.Context) {
 	}
 
 	for _, nif := range nifs {
-		if !c.Bool("all") &&
-			(len(nif.HardwareAddr) == 0 ||
-				nif.Flags&net.FlagLoopback == net.FlagLoopback ||
-				nif.Flags&net.FlagPointToPoint == net.FlagPointToPoint ||
-				nif.Flags&net.FlagUp != net.FlagUp) {
+		if !c.Bool("all") && !isOfInterest(nif) {
 			continue
 		}
 
@@ -119,6 +115,28 @@ func actionMain(c *cli.Context) {
 			break
 		}
 	}
+}
+
+func isOfInterest(nif net.Interface) bool {
+	// Filter out interfaces that have no hardware address.
+	if len(nif.HardwareAddr) == 0 {
+		return false
+	}
+	// Filter out loopback interfaces.
+	if nif.Flags&net.FlagLoopback == net.FlagLoopback {
+		return false
+	}
+	// Filter out Point-to-Point interfaces.
+	if nif.Flags&net.FlagPointToPoint == net.FlagPointToPoint {
+		return false
+	}
+	// Filter out interfaces that are not up.
+	if nif.Flags&net.FlagUp != net.FlagUp {
+		return false
+	}
+
+	// If the interface made it that far, assume it's of interest.
+	return true
 }
 
 func isIPv4(addr net.Addr) bool {
