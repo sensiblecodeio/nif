@@ -78,7 +78,7 @@ func actionMain(c *cli.Context) {
 				log.Fatalln("Error:", err)
 			}
 
-			v4Addrs, v6Addrs = splitIPs(addrs)
+			v4Addrs, v6Addrs = partition(addrs)
 		}
 
 		if !c.Bool("only-ip") {
@@ -143,7 +143,7 @@ func isIPv4(addr net.Addr) bool {
 	return strings.Contains(addr.String(), ".")
 }
 
-func splitIPs(addrs []net.Addr) ([]net.Addr, []net.Addr) {
+func partition(addrs []net.Addr) ([]net.Addr, []net.Addr) {
 	var v4Addrs []net.Addr
 	var v6Addrs []net.Addr
 
