@@ -44,7 +44,7 @@ address. This tool helps you with that.
        nif [global options] command [command options] [arguments...]
     
     VERSION:
-       1.0
+       1.2.1
     
     COMMANDS:
        help, h      Shows a list of commands or help for one command
@@ -55,7 +55,7 @@ address. This tool helps you with that.
     --ipv4, -4              Show IPv4 addresses next to network interface
     --ipv6, -6              Show IPv6 addresses next to network interface
     --only-ip, -i           Only show IP addresses of network interface
-    --retry, -r "0"         Retry n times in intervals of 1sec if no network interface could be found
+    --retry, -r "0"         Retry n times in intervals of 1sec if no interface addresses could be found
     --debug, -d             Show additional debug information
     --help, -h              show help
     --version, -v           print the version
