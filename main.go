@@ -46,7 +46,7 @@ func main() {
 		},
 		cli.IntFlag{
 			Name:  "retry, r",
-			Usage: "Retry n times in intervals of 1sec if no network interface could be found",
+			Usage: "Retry n times in intervals of 1sec if no interface addresses could be found",
 		},
 		cli.BoolFlag{
 			Name:  "debug, d",
@@ -65,21 +65,12 @@ func actionMain(c *cli.Context) {
 		log.Fatalln("Error: missing flag: -4/--ipv4 or -6/--ipv6")
 	}
 
-	var (
-		nifs []net.Interface
-		err  error
-	)
+	nifs, err := net.Interfaces()
+	if err != nil {
+		log.Fatalln("Error:", err)
+	}
 
-	for n := c.Int("retry"); n >= 0; n-- {
-		nifs, err = net.Interfaces()
-		if err != nil {
-			log.Fatalln("Error:", err)
-		}
-
-		if len(nifs) > 0 && c.Bool("all") {
-			break
-		}
-
+	if !c.Bool("all") {
 		var nifsFiltered []net.Interface
 		for _, nif := range nifs {
 			if isOfInterest(nif) {
@@ -90,21 +81,27 @@ func actionMain(c *cli.Context) {
 			}
 		}
 		nifs = nifsFiltered
-
-		if len(nifs) > 0 {
-			break
-		}
-
-		time.Sleep(1 * time.Second)
 	}
 
 	for _, nif := range nifs {
 		var v4Addrs, v6Addrs []net.Addr
 
 		if c.Bool("ipv4") || c.Bool("ipv6") || c.Bool("only-ip") {
-			addrs, err := nif.Addrs()
-			if err != nil {
-				log.Fatalln("Error:", err)
+			var addrs []net.Addr
+
+			for n := c.Int("retry"); n >= 0; n-- {
+				addrs, err = nif.Addrs()
+				if err != nil {
+					log.Fatalln("Error:", err)
+				}
+
+				if len(addrs) > 0 {
+					break
+				}
+
+				if n > 0 {
+					time.Sleep(1 * time.Second)
+				}
 			}
 
 			v4Addrs, v6Addrs = partition(addrs)
