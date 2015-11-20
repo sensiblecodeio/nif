@@ -95,7 +95,14 @@ func actionMain(c *cli.Context) {
 					log.Fatalln("Error:", err)
 				}
 
-				if len(addrs) > 0 {
+				v4Addrs, v6Addrs = partition(addrs)
+
+				if c.Bool("ipv4") && c.Bool("ipv6") {
+					if len(v4Addrs) > 0 && len(v6Addrs) > 0 {
+						break
+					}
+				} else if c.Bool("ipv4") && len(v4Addrs) > 0 ||
+					c.Bool("ipv6") && len(v6Addrs) > 0 {
 					break
 				}
 
@@ -103,8 +110,6 @@ func actionMain(c *cli.Context) {
 					time.Sleep(1 * time.Second)
 				}
 			}
-
-			v4Addrs, v6Addrs = partition(addrs)
 		}
 
 		if !c.Bool("only-ip") {
