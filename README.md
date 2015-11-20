@@ -63,7 +63,7 @@ address. This tool helps you with that.
 
 ## Installation
 
-    $ go get github.com/djui/nif
+    $ go get github.com/scraperwiki/nif
 
 
 ## Build
