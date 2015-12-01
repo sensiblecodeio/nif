@@ -99,10 +99,12 @@ func actionMain(c *cli.Context) {
 					v4IPs = v4IPs[0:1]
 				}
 				fmt.Fprint(&buf, stringIPs(v4IPs))
+			} else {
+				fmt.Fprint(&buf, "-")
 			}
 		}
 
-		if c.Bool("ipv4") && c.Bool("ipv6") && len(v6IPs) > 0 {
+		if c.Bool("ipv4") && c.Bool("ipv6") {
 			fmt.Fprint(&buf, " ")
 		}
 
@@ -112,6 +114,8 @@ func actionMain(c *cli.Context) {
 					v6IPs = v6IPs[0:1]
 				}
 				fmt.Fprint(&buf, stringIPs(v6IPs))
+			} else {
+				fmt.Fprint(&buf, "-")
 			}
 		}
 
@@ -128,13 +132,16 @@ func actionMain(c *cli.Context) {
 func stringIPs(addrs []net.IP) string {
 	var s string
 	for _, addr := range addrs {
-		s += addr.String() + "|"
+		s += addr.String() + ","
 	}
 
-	return strings.TrimRight(s, "|")
+	return strings.TrimRight(s, ",")
 }
 
 func stringHardwareAddress(hardwareAddr net.HardwareAddr) string {
 	s := hardwareAddr.String()
+	if len(s) == 0 {
+		return "-"
+	}
 	return s
 }
