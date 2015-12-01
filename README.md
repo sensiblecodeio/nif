@@ -44,7 +44,7 @@ address. This tool helps you with that.
        nif [global options] command [command options] [arguments...]
     
     VERSION:
-       1.3
+       2.0
     
     COMMANDS:
        help, h      Shows a list of commands or help for one command
